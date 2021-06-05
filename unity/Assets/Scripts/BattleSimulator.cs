@@ -92,6 +92,8 @@ public class BattleSimulator : MonoBehaviour
         shipList2[2].Hp = 2;
         shipList2[3].Hp = 2;
 
+        party2.IsBot = true;
+
         foreach (var s in shipList1)
         {
             party1.AddShip(s);
@@ -127,7 +129,8 @@ public class BattleSimulator : MonoBehaviour
 
         commandButtonGroup.gameObject.SetActive(false);
 
-        if (cmd.TargetType == TargetType.Single)
+        if (context.CurrentTurnShip.Party.IsBot == false
+            && cmd.TargetType == TargetType.Single)
         {
             tooltipView.Text1 = "목표물 선택";
             tooltipView.Text2 = "커맨드의 목표물을 선택하세요.";
@@ -142,6 +145,12 @@ public class BattleSimulator : MonoBehaviour
         commandButtonGroup.gameObject.SetActive(context.State == ContextState.Ready);
 
         commandButtonGroup.UpdateCommandList(context.CurrentTurnShip);
+
+        // 다음 턴에 봇이라면 바로 행동을 해 준다.
+        if (context.State == ContextState.Ready && context.CurrentTurnShip.Party.IsBot)
+        {
+            await ExecuteBattleCommandAsync(null);
+        }
     }
 
     async Task<Ship> WaitForShipSelection()
@@ -172,8 +181,6 @@ public class BattleSimulator : MonoBehaviour
 
     async Task ExecuteBattleCommandInternalAsync(IBattleCommand cmd)
     {
-        if (cmd == null) return;
-
         var oldTurnShip = context.CurrentTurnShip;
         var cmdResult = context.ExecuteCommand(cmd);
         for (var index = 0; index < cmdResult.DeltaList.Count; index++)
@@ -251,6 +258,7 @@ public class BattleSimulator : MonoBehaviour
                     ship2CardViewDict[context.CurrentTurnShip].Glow = true;
                     tooltipView.Text1 = "턴 변경";
                     tooltipView.Text2 = "턴이 변경됐습니다.";
+
                     break;
                 case DeltaType.Precision:
                     break;
