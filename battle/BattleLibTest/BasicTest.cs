@@ -7,7 +7,7 @@ namespace BattleLibTest
     public class BasicTest
     {
         // Context의 초기 상태
-       [Fact]
+        [Fact]
         public void InitialContext()
         {
             var c = new Context();
@@ -16,7 +16,7 @@ namespace BattleLibTest
             Assert.Empty(c.PartyList);
             Assert.Null(c.WinParty);
         }
-        
+
         // Ship의 초기 상태
         [Fact]
         public void InitialShip()
@@ -52,7 +52,7 @@ namespace BattleLibTest
             Assert.Equal(1, s.Mp);
             Assert.Equal(1, s.MaxMp);
         }
-        
+
         // Party의 초기 상태
         [Fact]
         public void InitialParty()
@@ -100,7 +100,7 @@ namespace BattleLibTest
             Assert.Single(commandList);
 
             var firstCommand = commandList[0];
-            
+
             Assert.Equal(s1, firstCommand.Source);
             Assert.Equal(BattleCommandType.SingleAttack, firstCommand.CommandType);
 
@@ -115,20 +115,20 @@ namespace BattleLibTest
             Assert.Equal(s1, deltaList.Current.Source);
             Assert.Equal(s2, deltaList.Current.Target);
             deltaList.MoveNext();
-            
+
             Assert.NotNull(deltaList.Current);
             Assert.Equal(DeltaType.Hp, deltaList.Current.DeltaType);
             Assert.Equal(s1, deltaList.Current.Source);
             Assert.Equal(s2, deltaList.Current.Target);
             Assert.Equal(-1, deltaList.Current.Value);
             deltaList.MoveNext();
-            
+
             Assert.NotNull(deltaList.Current);
             Assert.Equal(DeltaType.Destroyed, deltaList.Current.DeltaType);
             Assert.Equal(s1, deltaList.Current.Source);
             Assert.Equal(s2, deltaList.Current.Target);
             deltaList.MoveNext();
-            
+
             Assert.Null(deltaList.Current);
             deltaList.Dispose();
 
@@ -193,7 +193,7 @@ namespace BattleLibTest
             var cmd2 = new DoubleHp(null);
             Assert.Throws<ConflictedBattleCommandTypeException>(() => s.LearnCommand(cmd2));
         }
-        
+
         // 이미 Ship이 배운 BattleCommand는 다른 Ship이 배울 수 없다.
         [Fact]
         public void ConflictedLearn()
@@ -201,7 +201,7 @@ namespace BattleLibTest
             var s1 = new Ship();
             var cmd = new DoubleHp(null);
             s1.LearnCommand(cmd);
-            
+
             var s2 = new Ship();
             Assert.Throws<ConflictedRelationException>(() => s2.LearnCommand(cmd));
         }
@@ -229,20 +229,20 @@ namespace BattleLibTest
             using (var deltaList = c.ExecuteCommand(cmd1).DeltaList.GetEnumerator())
             {
                 deltaList.MoveNext();
-                
+
                 Assert.NotNull(deltaList.Current);
                 Assert.Equal(DeltaType.Hp, deltaList.Current.DeltaType);
                 Assert.Equal(s1, deltaList.Current.Target);
                 Assert.Equal(1, deltaList.Current.Value);
                 deltaList.MoveNext();
-            
+
                 Assert.NotNull(deltaList.Current);
                 Assert.Equal(DeltaType.TurnChanged, deltaList.Current.DeltaType);
                 Assert.Equal(s2, deltaList.Current.Source);
                 Assert.Equal(s2, deltaList.Current.Target);
                 deltaList.MoveNext();
-            
-                Assert.Null(deltaList.Current);    
+
+                Assert.Null(deltaList.Current);
             }
 
             // 아직 승부 나지 않았다.
@@ -257,26 +257,26 @@ namespace BattleLibTest
             using (var deltaList = c.ExecuteCommand(cmd2).DeltaList.GetEnumerator())
             {
                 deltaList.MoveNext();
-                
+
                 Assert.NotNull(deltaList.Current);
                 Assert.Equal(DeltaType.Fire, deltaList.Current.DeltaType);
                 Assert.Equal(s2, deltaList.Current.Source);
                 Assert.Equal(s1, deltaList.Current.Target);
                 deltaList.MoveNext();
-                
+
                 Assert.NotNull(deltaList.Current);
                 Assert.Equal(DeltaType.Hp, deltaList.Current.DeltaType);
                 Assert.Equal(s2, deltaList.Current.Source);
                 Assert.Equal(s1, deltaList.Current.Target);
                 Assert.Equal(-1, deltaList.Current.Value);
                 deltaList.MoveNext();
-                
+
                 Assert.NotNull(deltaList.Current);
                 Assert.Equal(DeltaType.TurnChanged, deltaList.Current.DeltaType);
                 Assert.Equal(s1, deltaList.Current.Source);
                 Assert.Equal(s1, deltaList.Current.Target);
                 deltaList.MoveNext();
-                
+
                 Assert.Null(deltaList.Current);
             }
 
@@ -292,25 +292,25 @@ namespace BattleLibTest
             using (var deltaList = c.ExecuteCommand(cmd3).DeltaList.GetEnumerator())
             {
                 deltaList.MoveNext();
-                
+
                 Assert.NotNull(deltaList.Current);
                 Assert.Equal(DeltaType.Fire, deltaList.Current.DeltaType);
                 Assert.Equal(s1, deltaList.Current.Source);
                 Assert.Equal(s2, deltaList.Current.Target);
                 deltaList.MoveNext();
-                
+
                 Assert.NotNull(deltaList.Current);
                 Assert.Equal(DeltaType.Hp, deltaList.Current.DeltaType);
                 Assert.Equal(s1, deltaList.Current.Source);
                 Assert.Equal(s2, deltaList.Current.Target);
                 Assert.Equal(-1, deltaList.Current.Value);
                 deltaList.MoveNext();
-                
+
                 Assert.NotNull(deltaList.Current);
                 Assert.Equal(DeltaType.Destroyed, deltaList.Current.DeltaType);
                 Assert.Equal(s2, deltaList.Current.Target);
                 deltaList.MoveNext();
-                
+
                 Assert.Null(deltaList.Current);
             }
 
@@ -319,7 +319,7 @@ namespace BattleLibTest
             Assert.Equal(p1, c.WinParty);
             Assert.Null(c.CurrentTurnShip);
         }
-        
+
         // 특정 Party를 턴으로 지정했을 때, 해당 Party의 첫 번째 Ship의 턴 상태가 된다.
         [Fact]
         public void SetTurnRule()
@@ -336,7 +336,7 @@ namespace BattleLibTest
             c.SetCurrentTurnParty(p1);
             Assert.Equal(s1, c.CurrentTurnShip);
         }
-        
+
         // UndefinedTurn 상태가 아닐 때 턴을 지정할 수는 없다.
         [Fact]
         public void SetTurnRuleNotReady()
@@ -363,7 +363,7 @@ namespace BattleLibTest
             Assert.Equal(s2, s1.NextShip);
             Assert.Equal(s1, s2.NextShip);
         }
-        
+
         // 특정 Ship 다음 행동이 가능한 Ship을 반환하는 NextShip 기능을 테스트한다.
         [Fact]
         public void NextShip2()
@@ -387,7 +387,7 @@ namespace BattleLibTest
             Assert.Equal(s2B, s2A.NextShip);
             Assert.Equal(s1A, s2B.NextShip);
         }
-        
+
         // 특정 Ship 다음 행동이 가능한 Ship을 반환하는 NextShip 기능을 테스트한다.
         // HP = 0인 Ship은 스킵해야 한다.
         [Fact]
@@ -465,7 +465,7 @@ namespace BattleLibTest
             Assert.Contains(p1, c.PartyList);
             Assert.Contains(p2, c.PartyList);
         }
-        
+
         // Party에 Ship을 두 번 넣거나, Context에 Party를 두 번 넣을 수 없다.
         [Fact]
         public void DuplicatedRelation()
@@ -478,7 +478,7 @@ namespace BattleLibTest
             c.AddParty(p);
             Assert.Throws<DuplicatedRelationException>(() => c.AddParty(p));
         }
-        
+
         // Party에 속한 Ship은 다른 Party에 속할 수 없다.
         // Context에 속한 Party는 다른 Context에 속할 수 없다.
         [Fact]
@@ -489,10 +489,10 @@ namespace BattleLibTest
             var p = new Party();
             p.AddShip(s);
             c.AddParty(p);
-            
+
             var p2 = new Party();
             Assert.Throws<ConflictedRelationException>(() => p2.AddShip(s));
-            
+
             var c2 = new Context();
             Assert.Throws<ConflictedRelationException>(() => c2.AddParty(p));
         }
@@ -592,11 +592,11 @@ namespace BattleLibTest
                 Assert.Equal(s1, deltaList.Current.Source);
                 Assert.Equal(s1, deltaList.Current.Target);
                 deltaList.MoveNext();
-                
+
                 Assert.NotNull(deltaList.Current);
                 Assert.Equal(DeltaType.TurnChanged, deltaList.Current.DeltaType);
                 deltaList.MoveNext();
-                
+
                 Assert.Null(deltaList.Current);
             }
 
@@ -607,25 +607,25 @@ namespace BattleLibTest
             using (var deltaList = c.ExecuteCommand(cmd2).DeltaList.GetEnumerator())
             {
                 deltaList.MoveNext();
-                
+
                 Assert.NotNull(deltaList.Current);
                 Assert.Equal(DeltaType.Fire, deltaList.Current.DeltaType);
                 Assert.Equal(s1, deltaList.Current.Source);
                 Assert.Equal(s2, deltaList.Current.Target);
                 deltaList.MoveNext();
-                
+
                 Assert.NotNull(deltaList.Current);
                 Assert.Equal(DeltaType.Hp, deltaList.Current.DeltaType);
                 Assert.Equal(s1, deltaList.Current.Source);
                 Assert.Equal(s2, deltaList.Current.Target);
                 Assert.Equal(-2, deltaList.Current.Value);
                 deltaList.MoveNext();
-                
+
                 Assert.NotNull(deltaList.Current);
                 Assert.Equal(DeltaType.Destroyed, deltaList.Current.DeltaType);
                 Assert.Equal(s2, deltaList.Current.Target);
                 deltaList.MoveNext();
-                
+
                 Assert.Null(deltaList.Current);
             }
         }
@@ -653,47 +653,47 @@ namespace BattleLibTest
             using (var deltaList = c.ExecuteCommand(cmd).DeltaList.GetEnumerator())
             {
                 deltaList.MoveNext();
-                
+
                 Assert.NotNull(deltaList.Current);
                 Assert.Equal(DeltaType.Fire, deltaList.Current.DeltaType);
                 Assert.Equal(s1, deltaList.Current.Source);
                 Assert.Equal(s2A, deltaList.Current.Target);
                 deltaList.MoveNext();
-                
+
                 Assert.NotNull(deltaList.Current);
                 Assert.Equal(DeltaType.Hp, deltaList.Current.DeltaType);
                 Assert.Equal(s1, deltaList.Current.Source);
                 Assert.Equal(s2A, deltaList.Current.Target);
                 Assert.Equal(-1, deltaList.Current.Value);
                 deltaList.MoveNext();
-                
+
                 Assert.NotNull(deltaList.Current);
                 Assert.Equal(DeltaType.Destroyed, deltaList.Current.DeltaType);
                 Assert.Equal(s2A, deltaList.Current.Target);
                 deltaList.MoveNext();
-                
+
                 Assert.NotNull(deltaList.Current);
                 Assert.Equal(DeltaType.Fire, deltaList.Current.DeltaType);
                 Assert.Equal(s1, deltaList.Current.Source);
                 Assert.Equal(s2B, deltaList.Current.Target);
                 deltaList.MoveNext();
-                
+
                 Assert.NotNull(deltaList.Current);
                 Assert.Equal(DeltaType.Hp, deltaList.Current.DeltaType);
                 Assert.Equal(s1, deltaList.Current.Source);
                 Assert.Equal(s2B, deltaList.Current.Target);
                 Assert.Equal(-1, deltaList.Current.Value);
                 deltaList.MoveNext();
-                
+
                 Assert.NotNull(deltaList.Current);
                 Assert.Equal(DeltaType.Destroyed, deltaList.Current.DeltaType);
                 Assert.Equal(s2B, deltaList.Current.Target);
                 deltaList.MoveNext();
-                
+
                 Assert.Null(deltaList.Current);
             }
         }
-        
+
         // MP 사용해서 스스로를 Heal한다.
         [Fact]
         public void Heal()
@@ -706,7 +706,7 @@ namespace BattleLibTest
 
             s1.Hp = s1.MaxHp = 2;
             s2.Hp = s2.MaxHp = 2;
-            
+
             p1.AddShip(s1);
             p2.AddShip(s2);
             c.AddParty(p1);
@@ -715,9 +715,9 @@ namespace BattleLibTest
             s1.LearnCommand(new Heal());
             var s1HealCmd = s1.CommandList.FirstOrDefault(e => e.CommandType == BattleCommandType.Heal);
             Assert.NotNull(s1HealCmd);
-            
+
             Assert.Equal(1, s1.Mp);
-            
+
             using (var deltaList = c.ExecuteCommand(s1HealCmd).DeltaList.GetEnumerator())
             {
                 deltaList.MoveNext();
@@ -730,25 +730,25 @@ namespace BattleLibTest
 
                 AssertDeltaSelfValue(s1, DeltaType.Mp, -1, deltaList.Current);
                 deltaList.MoveNext();
-                
+
                 AssertDeltaSelfValue(s1, DeltaType.Hp, 0, deltaList.Current);
                 deltaList.MoveNext();
-                
+
                 Assert.NotNull(deltaList.Current);
                 Assert.Equal(DeltaType.TurnChanged, deltaList.Current.DeltaType);
                 deltaList.MoveNext();
-                
+
                 Assert.Null(deltaList.Current);
             }
 
             Assert.Equal(2, s1.Hp);
             Assert.Equal(0, s1.Mp);
-            
+
             var cmd2 = s2.CommandList.FirstOrDefault(e => e.CommandType == BattleCommandType.SingleAttack);
             Assert.NotNull(cmd2);
             cmd2.SetTarget(s1);
             c.ExecuteCommand(cmd2);
-            
+
             Assert.Equal(1, s1.Hp);
             Assert.Equal(0, s1.Mp);
 
@@ -776,29 +776,29 @@ namespace BattleLibTest
             var s2b = new Ship();
             var s2c = new Ship();
             var s2d = new Ship();
-            
+
             var p1 = new Party();
             p1.AddShip(s1a);
             p1.AddShip(s1b);
             p1.AddShip(s1c);
             p1.AddShip(s1d);
-            
+
             var p2 = new Party();
             p2.AddShip(s2a);
             p2.AddShip(s2b);
             p2.AddShip(s2c);
             p2.AddShip(s2d);
-            
+
             c.AddParty(p1);
             c.AddParty(p2);
-            
+
             c.SetCurrentTurnParty(p1);
 
             ExecuteSingleAttack(c, s1a, s2a);
             ExecuteSingleAttack(c, s1b, s2b);
             ExecuteSingleAttack(c, s1c, s2c);
             ExecuteSingleAttack(c, s1d, s2d);
-            
+
             Assert.Equal(ContextState.Finished, c.State);
             Assert.Equal(p1, c.WinParty);
         }

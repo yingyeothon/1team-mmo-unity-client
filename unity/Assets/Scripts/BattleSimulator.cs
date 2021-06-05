@@ -83,6 +83,7 @@ public class BattleSimulator : MonoBehaviour
         cardView2ShipDict[cardViewList[7]] = shipList2[3];
         
         shipList1[0].LearnCommand(new Heal());
+        shipList1[0].LearnCommand(new Bombard());
         shipList1[0].MaxHp = 5;
         shipList1[0].Hp = 1;
 
