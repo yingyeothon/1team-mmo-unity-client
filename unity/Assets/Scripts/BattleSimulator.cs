@@ -217,6 +217,7 @@ public class BattleSimulator : MonoBehaviour
                 case DeltaType.Precision:
                     break;
                 case DeltaType.Heal:
+                    targetShipPivot.InstantiateHealEffect();
                     break;
                 case DeltaType.Mp:
                     UpdateHpMp(ship2CardViewDict[delta.Source], delta.Source);

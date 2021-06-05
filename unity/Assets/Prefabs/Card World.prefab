@@ -242,6 +242,7 @@ MonoBehaviour:
   shipModel: {fileID: 5952441317601803855}
   automaticFire: 0
   explosionPrefab: {fileID: 3044418566072797053, guid: 0ed70fb5ec5bd0b4cbaf34f54df0341e, type: 3}
+  healPrefab: {fileID: 3044418566072797053, guid: 84bbb775364113b4dbb76a507efa18fa, type: 3}
 --- !u!54 &6697176781576044727
 Rigidbody:
   m_ObjectHideFlags: 0

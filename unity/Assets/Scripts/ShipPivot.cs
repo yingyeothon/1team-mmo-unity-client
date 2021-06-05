@@ -23,6 +23,9 @@ public class ShipPivot : MonoBehaviour
     [SerializeField]
     GameObject explosionPrefab;
 
+    [SerializeField]
+    GameObject healPrefab;
+
     public bool IsShipModelNull => shipModel == null;
 
     IEnumerator StartFiringCoro()
@@ -86,5 +89,13 @@ public class ShipPivot : MonoBehaviour
         Destroy(explosion, 3);
         
         Destroy(gameObject);
+    }
+
+    public void InstantiateHealEffect()
+    {
+        var explosion = Instantiate(healPrefab);
+        explosion.transform.position = transform.position;
+        explosion.transform.localScale = Vector3.one * 10;
+        Destroy(explosion, 3);
     }
 }
