@@ -7,7 +7,7 @@ namespace BattleLib
         TargetType TargetType { get; set; }
         BattleCommandType CommandType { get; }
         Ship Source { get; set; }
+        Ship Target { get; set; }
         void ExecuteCommand(Context c);
-        void SetTarget(Ship s);
     }
 }

@@ -7,7 +7,7 @@ namespace BattleLib
         public TargetType TargetType { get; set; }
         public BattleCommandType CommandType => BattleCommandType.Bombard;
         public Ship Source { get; set; }
-        Ship Target { get; set; }
+        public Ship Target { get; set; }
 
         public void ExecuteCommand(Context c)
         {
@@ -24,11 +24,6 @@ namespace BattleLib
             {
                 c.AddDelta(delta);
             }
-        }
-
-        public void SetTarget(Ship s)
-        {
-            Target = s;
         }
     }
 

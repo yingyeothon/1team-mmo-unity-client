@@ -3,7 +3,7 @@ using System.Linq;
 
 namespace BattleLib
 {
-    public class Context : IDeltaAccumulator
+    public class Context : IDeltaAccumulator, IContext
     {
         public void AddParty(Party p)
         {
@@ -16,6 +16,7 @@ namespace BattleLib
             foreach (var s in p.ShipList)
             {
                 s.Context = this;
+                shipMap[s.Id] = s;
             }
         }
 
@@ -97,7 +98,7 @@ namespace BattleLib
             }
 
             var singleAttack = new SingleAttack {Source = currentTurnShip};
-            singleAttack.SetTarget(enemyShip);
+            singleAttack.Target = enemyShip;
 
             return ExecuteCommand(singleAttack);
         }
@@ -140,5 +141,11 @@ namespace BattleLib
 
         readonly List<Delta> deltaList = new List<Delta>();
         bool finished;
+
+        readonly Dictionary<long, Ship> shipMap = new Dictionary<long, Ship>();
+
+        public Ship FindShipById(long id) {
+            return shipMap[id];
+        }
     }
 }

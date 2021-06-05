@@ -136,7 +136,7 @@ public class BattleSimulator : MonoBehaviour
             tooltipView.Text2 = "커맨드의 목표물을 선택하세요.";
 
             var selectedShip = await WaitForShipSelection();
-            cmd.SetTarget(selectedShip);
+            cmd.Target = selectedShip;
         }
 
         busy = true;

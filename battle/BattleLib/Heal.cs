@@ -7,6 +7,11 @@ namespace BattleLib
         public TargetType TargetType { get; set; } = TargetType.Self;
         public BattleCommandType CommandType => BattleCommandType.Heal;
         public Ship Source { get; set; }
+        public Ship Target
+        {
+            get => throw new NotImplementedException();
+            set => throw new CannotChangeTargetException();
+        }
 
         public void ExecuteCommand(Context c)
         {
@@ -19,13 +24,8 @@ namespace BattleLib
 
             var oldHp = Source.Hp;
             Source.Hp = Math.Min(oldHp + 1, Source.MaxHp);
-            
-            c.AddDelta(new Delta {DeltaType = DeltaType.Hp, Source = Source, Target = Source, Value = Source.Hp - oldHp});
-        }
 
-        public void SetTarget(Ship s)
-        {
-            throw new CannotChangeTargetException();
+            c.AddDelta(new Delta {DeltaType = DeltaType.Hp, Source = Source, Target = Source, Value = Source.Hp - oldHp});
         }
     }
 }

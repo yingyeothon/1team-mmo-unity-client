@@ -14,7 +14,7 @@
         public TargetType TargetType { get; set; }
         public BattleCommandType CommandType => BattleCommandType.SingleAttack;
         public Ship Source { get; set; }
-        Ship Target { get; set; }
+        public Ship Target { get; set; }
 
         public void ExecuteCommand(Context c)
         {
@@ -35,11 +35,6 @@
             {
                 deltaAccumulator.AddDelta(new Delta {DeltaType = DeltaType.Destroyed, Source = source, Target = target});
             }
-        }
-
-        public void SetTarget(Ship s)
-        {
-            Target = s;
         }
     }
 }

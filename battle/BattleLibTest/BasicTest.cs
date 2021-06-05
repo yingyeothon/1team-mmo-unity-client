@@ -104,7 +104,7 @@ namespace BattleLibTest
             Assert.Equal(s1, firstCommand.Source);
             Assert.Equal(BattleCommandType.SingleAttack, firstCommand.CommandType);
 
-            firstCommand.SetTarget(s2);
+            firstCommand.Target = s2;
 
             var commandResult = c.ExecuteCommand(firstCommand);
             var deltaList = commandResult.DeltaList.GetEnumerator();
@@ -224,7 +224,7 @@ namespace BattleLibTest
             s1.LearnCommand(new DoubleHp(null));
             var cmd1 = s1.CommandList.FirstOrDefault(e => e.CommandType == BattleCommandType.DoubleHp);
             Assert.NotNull(cmd1);
-            cmd1.SetTarget(s1);
+            cmd1.Target = s1;
 
             using (var deltaList = c.ExecuteCommand(cmd1).DeltaList.GetEnumerator())
             {
@@ -252,7 +252,7 @@ namespace BattleLibTest
 
             var cmd2 = s2.CommandList.FirstOrDefault(e => e.CommandType == BattleCommandType.SingleAttack);
             Assert.NotNull(cmd2);
-            cmd2.SetTarget(s1);
+            cmd2.Target = s1;
 
             using (var deltaList = c.ExecuteCommand(cmd2).DeltaList.GetEnumerator())
             {
@@ -287,7 +287,7 @@ namespace BattleLibTest
 
             var cmd3 = s1.CommandList.FirstOrDefault(e => e.CommandType == BattleCommandType.SingleAttack);
             Assert.NotNull(cmd3);
-            cmd3.SetTarget(s2);
+            cmd3.Target = s2;
 
             using (var deltaList = c.ExecuteCommand(cmd3).DeltaList.GetEnumerator())
             {
@@ -603,7 +603,7 @@ namespace BattleLibTest
             Assert.True(c.ExecuteCommand(new DoubleHp(s2)).Valid);
             var cmd2 = s1.CommandList.FirstOrDefault(e => e.CommandType == BattleCommandType.SingleAttack);
             Assert.NotNull(cmd2);
-            cmd2.SetTarget(s2);
+            cmd2.Target = s2;
             using (var deltaList = c.ExecuteCommand(cmd2).DeltaList.GetEnumerator())
             {
                 deltaList.MoveNext();
@@ -649,7 +649,7 @@ namespace BattleLibTest
             s1.LearnCommand(new Bombard());
             var cmd = s1.CommandList.FirstOrDefault(e => e.CommandType == BattleCommandType.Bombard);
             Assert.NotNull(cmd);
-            cmd.SetTarget(s2A);
+            cmd.Target = s2A;
             using (var deltaList = c.ExecuteCommand(cmd).DeltaList.GetEnumerator())
             {
                 deltaList.MoveNext();
@@ -746,7 +746,7 @@ namespace BattleLibTest
 
             var cmd2 = s2.CommandList.FirstOrDefault(e => e.CommandType == BattleCommandType.SingleAttack);
             Assert.NotNull(cmd2);
-            cmd2.SetTarget(s1);
+            cmd2.Target = s1;
             c.ExecuteCommand(cmd2);
 
             Assert.Equal(1, s1.Hp);
@@ -807,7 +807,7 @@ namespace BattleLibTest
         {
             var cmd = attackSourceShip.CommandList.FirstOrDefault(e => e.CommandType == BattleCommandType.SingleAttack);
             Assert.NotNull(cmd);
-            cmd.SetTarget(attackTargetShip);
+            cmd.Target = attackTargetShip;
             c.ExecuteCommand(cmd);
         }
 
@@ -845,7 +845,7 @@ namespace BattleLibTest
 
             var firstCommand = commandList[0];
 
-            firstCommand.SetTarget(s2);
+            firstCommand.Target = s2;
 
             var commandResult = c.ExecuteCommand(firstCommand);
             var deltaList = commandResult.DeltaList.GetEnumerator();

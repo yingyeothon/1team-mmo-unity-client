@@ -12,6 +12,8 @@ namespace BattleLib
     
     public class Ship
     {
+        public long Id { get; set; }
+
         public int Hp
         {
             get => hp.Current;
