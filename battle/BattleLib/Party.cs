@@ -16,6 +16,7 @@ namespace BattleLib
 
         public IList<Ship> ShipList => shipList;
         public Context Context { get; set; }
+        public bool IsBot { get; set; }
 
         readonly List<Ship> shipList = new List<Ship>();
     }

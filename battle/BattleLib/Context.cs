@@ -29,6 +29,16 @@ namespace BattleLib
 
         public CommandResult ExecuteCommand(IBattleCommand cmd)
         {
+            if (cmd == null)
+            {
+                if (currentTurnParty.IsBot)
+                {
+                    return ExecuteCommandBot();
+                }
+                
+                throw new CommandNullException();
+            }
+            
             if (cmd.Source == null) throw new SourceNullException();
 
             if (cmd.Source != CurrentTurnShip) throw new InvalidBattleStateException();
@@ -41,8 +51,12 @@ namespace BattleLib
             {
                 result.DeltaList.Add(d);
             }
-            
-            if (currentTurnShip != cmd.Source.NextShip && partyList.Count(p => p.ShipList.Count(s => s.Hp > 0) > 0) > 1)
+
+            // 다음 행동할 Ship이 현재 Ship과 다르고, HP가 남아있는 Ship이 있는 Party가 한 개보다 많다면
+            // 다음 행동할 Ship으로 턴 넘겨준다.
+            // 그게 아니라면 전투는 결판이 난 것이다.
+            if (currentTurnShip != cmd.Source.NextShip
+                && partyList.Count(p => p.ShipList.Any(s => s.Hp > 0)) > 1)
             {
                 currentTurnShip = cmd.Source.NextShip;
                 currentTurnParty = currentTurnShip.Party;
@@ -59,8 +73,33 @@ namespace BattleLib
             }
 
             deltaList.Clear();
-            
+
             return result;
+        }
+
+        CommandResult ExecuteCommandBot()
+        {
+            if (currentTurnParty.IsBot == false)
+            {
+                throw new InvalidBattleStateException();
+            }
+            
+            var enemyParty = partyList.FirstOrDefault(e => e != currentTurnParty);
+            if (enemyParty == null)
+            {
+                throw new InvalidBattleStateException();
+            }
+
+            var enemyShip = enemyParty.ShipList.FirstOrDefault(e => e.Hp > 0);
+            if (enemyShip == null)
+            {
+                throw new InvalidBattleStateException();
+            }
+
+            var singleAttack = new SingleAttack {Source = currentTurnShip};
+            singleAttack.SetTarget(enemyShip);
+
+            return ExecuteCommand(singleAttack);
         }
 
         public ContextState State => GetState();
@@ -76,10 +115,10 @@ namespace BattleLib
 
             if (partyList.Any(e => e.ShipList.Count == 0)) return ContextState.PartyEmpty;
 
-            if (finished) return ContextState.Finished; 
+            if (finished) return ContextState.Finished;
 
             if (currentTurnParty == null) return ContextState.UndefinedTurn;
-            
+
             return ContextState.Ready;
         }
 
@@ -98,7 +137,7 @@ namespace BattleLib
         {
             deltaList.Add(delta);
         }
-        
+
         readonly List<Delta> deltaList = new List<Delta>();
         bool finished;
     }

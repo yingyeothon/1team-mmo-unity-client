@@ -816,5 +816,96 @@ namespace BattleLibTest
         {
             Assert.Equal(TargetType.Self, new Heal().TargetType);
         }
+        
+        // 봇이 조종하는 파티 (봇 파티)
+        // 항상 SingleAttack만 함
+        // 1:1
+        [Fact]
+        public void BasicBot()
+        {
+            var c = new Context();
+            var s1 = new Ship();
+            var s2 = new Ship();
+            var p1 = new Party();
+            var p2 = new Party();
+            p1.AddShip(s1);
+            p2.AddShip(s2);
+            c.AddParty(p1);
+            c.AddParty(p2);
+            c.SetCurrentTurnParty(p1);
+
+            // 상대방 파티는 봇이다.
+            p2.IsBot = true;
+
+            // 서로 한번씩 공격하는 것을 봐야하니 바로 죽지 않도록 HP 증가시켜준다.
+            s1.Hp = 2;
+            s2.Hp = 2;
+
+            var commandList = s1.CommandList;
+
+            var firstCommand = commandList[0];
+
+            firstCommand.SetTarget(s2);
+
+            var commandResult = c.ExecuteCommand(firstCommand);
+            var deltaList = commandResult.DeltaList.GetEnumerator();
+            deltaList.MoveNext();
+
+            Assert.NotNull(deltaList.Current);
+            Assert.Equal(DeltaType.Fire, deltaList.Current.DeltaType);
+            Assert.Equal(s1, deltaList.Current.Source);
+            Assert.Equal(s2, deltaList.Current.Target);
+            deltaList.MoveNext();
+
+            Assert.NotNull(deltaList.Current);
+            Assert.Equal(DeltaType.Hp, deltaList.Current.DeltaType);
+            Assert.Equal(s1, deltaList.Current.Source);
+            Assert.Equal(s2, deltaList.Current.Target);
+            Assert.Equal(-1, deltaList.Current.Value);
+            deltaList.MoveNext();
+            
+            Assert.NotNull(deltaList.Current);
+            Assert.Equal(DeltaType.TurnChanged, deltaList.Current.DeltaType);
+            deltaList.MoveNext();
+            
+            Assert.Null(deltaList.Current);
+            deltaList.Dispose();
+            
+            // s1 -> s2 공격한 후 상태 (플레이어가 공격)
+            Assert.Equal(2, s1.Hp);
+            Assert.Equal(1, s2.Hp);
+            
+            // 봇 차례이다.
+            Assert.True(c.CurrentTurnShip.Party.IsBot);
+            
+            // 봇이 행동할 차례에는 행동이 내부적으로 결정되므로 null 넘긴다.
+            var commandResult2 = c.ExecuteCommand(null);
+            var deltaList2 = commandResult2.DeltaList.GetEnumerator();
+            deltaList2.MoveNext();
+            
+            Assert.NotNull(deltaList2.Current);
+            Assert.Equal(DeltaType.Fire, deltaList2.Current.DeltaType);
+            Assert.Equal(s2, deltaList2.Current.Source);
+            Assert.Equal(s1, deltaList2.Current.Target);
+            deltaList2.MoveNext();
+
+            Assert.NotNull(deltaList2.Current);
+            Assert.Equal(DeltaType.Hp, deltaList2.Current.DeltaType);
+            Assert.Equal(s2, deltaList2.Current.Source);
+            Assert.Equal(s1, deltaList2.Current.Target);
+            Assert.Equal(-1, deltaList2.Current.Value);
+            deltaList2.MoveNext();
+            
+            Assert.NotNull(deltaList2.Current);
+            Assert.Equal(DeltaType.TurnChanged, deltaList2.Current.DeltaType);
+            deltaList2.MoveNext();
+
+            Assert.Null(deltaList2.Current);
+            deltaList2.Dispose();
+            
+            // s2 -> s1 공격한 후 상태 (봇이 공격)
+            Assert.Equal(1, s1.Hp);
+            Assert.Equal(1, s2.Hp);
+        }
     }
 }
