@@ -86,6 +86,11 @@ public class BattleSimulator : MonoBehaviour
         shipList1[0].LearnCommand(new Bombard());
         shipList1[0].MaxHp = 5;
         shipList1[0].Hp = 1;
+        
+        shipList2[0].Hp = 2;
+        shipList2[1].Hp = 2;
+        shipList2[2].Hp = 2;
+        shipList2[3].Hp = 2;
 
         foreach (var s in shipList1)
         {
@@ -239,7 +244,10 @@ public class BattleSimulator : MonoBehaviour
 
                     break;
                 case DeltaType.TurnChanged:
-                    ship2CardViewDict[oldTurnShip].Glow = false;
+                    foreach (var cardView in cardViewList)
+                    {
+                        cardView.Glow = false;
+                    }
                     ship2CardViewDict[context.CurrentTurnShip].Glow = true;
                     tooltipView.Text1 = "턴 변경";
                     tooltipView.Text2 = "턴이 변경됐습니다.";
