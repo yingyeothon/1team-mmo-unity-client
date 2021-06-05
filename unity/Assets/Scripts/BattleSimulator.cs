@@ -1,6 +1,5 @@
 using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Threading.Tasks;
 using BattleLib;
 using UnityEngine;
@@ -82,6 +81,10 @@ public class BattleSimulator : MonoBehaviour
         cardView2ShipDict[cardViewList[5]] = shipList2[1];
         cardView2ShipDict[cardViewList[6]] = shipList2[2];
         cardView2ShipDict[cardViewList[7]] = shipList2[3];
+        
+        shipList1[0].LearnCommand(new Heal());
+        shipList1[0].MaxHp = 5;
+        shipList1[0].Hp = 1;
 
         foreach (var s in shipList1)
         {
@@ -121,7 +124,7 @@ public class BattleSimulator : MonoBehaviour
         if (cmd.TargetType == TargetType.Single)
         {
             tooltipView.Text1 = "목표물 선택";
-            tooltipView.Text2 = $"커맨드의 목표물을 선택하세요.";
+            tooltipView.Text2 = "커맨드의 목표물을 선택하세요.";
 
             var selectedShip = await WaitForShipSelection();
             cmd.SetTarget(selectedShip);
@@ -200,7 +203,7 @@ public class BattleSimulator : MonoBehaviour
                     break;
                 case DeltaType.Destroyed:
                     tooltipView.Text1 = "파괴";
-                    tooltipView.Text2 = $"목표물이 파괴되었습니다.";
+                    tooltipView.Text2 = "목표물이 파괴되었습니다.";
                     ship2CardViewDict[delta.Target].Glow = false;
                     targetShipPivot.DestroyWithExplosion();
                     await Task.Delay(1000);
@@ -209,7 +212,7 @@ public class BattleSimulator : MonoBehaviour
                     ship2CardViewDict[oldTurnShip].Glow = false;
                     ship2CardViewDict[context.CurrentTurnShip].Glow = true;
                     tooltipView.Text1 = "턴 변경";
-                    tooltipView.Text2 = $"턴이 변경됐습니다.";
+                    tooltipView.Text2 = "턴이 변경됐습니다.";
                     break;
                 case DeltaType.Precision:
                     break;

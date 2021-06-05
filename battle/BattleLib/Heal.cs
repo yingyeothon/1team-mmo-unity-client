@@ -4,7 +4,7 @@ namespace BattleLib
 {
     public class Heal : IBattleCommand
     {
-        public TargetType TargetType { get; set; }
+        public TargetType TargetType { get; set; } = TargetType.Self;
         public BattleCommandType CommandType => BattleCommandType.Heal;
         public Ship Source { get; set; }
 

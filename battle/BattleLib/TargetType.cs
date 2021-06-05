@@ -4,5 +4,6 @@
     {
         Single,
         All,
+        Self,
     }
 }

@@ -810,5 +810,11 @@ namespace BattleLibTest
             cmd.SetTarget(attackTargetShip);
             c.ExecuteCommand(cmd);
         }
+
+        [Fact]
+        public void HealIsSelfTargetType()
+        {
+            Assert.Equal(TargetType.Self, new Heal().TargetType);
+        }
     }
 }
