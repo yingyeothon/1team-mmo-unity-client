@@ -3,7 +3,7 @@ using System.Linq;
 
 namespace BattleLib
 {
-    public class Context
+    public class Context : IDeltaAccumulator
     {
         public void AddParty(Party p)
         {

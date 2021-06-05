@@ -24,16 +24,16 @@
             ExecuteBasicSingleAttack(c, source, target);
         }
 
-        public static void ExecuteBasicSingleAttack(Context c, Ship source, Ship target)
+        public static void ExecuteBasicSingleAttack(IDeltaAccumulator deltaAccumulator, Ship source, Ship target)
         {
-            c.AddDelta(new Delta {DeltaType = DeltaType.Fire, Source = source, Target = target});
+            deltaAccumulator.AddDelta(new Delta {DeltaType = DeltaType.Fire, Source = source, Target = target});
             
             var damage = source.AttackRate;
             target.Hp -= damage;
-            c.AddDelta(new Delta {DeltaType = DeltaType.Hp, Source = source, Target = target, Value = -damage});
+            deltaAccumulator.AddDelta(new Delta {DeltaType = DeltaType.Hp, Source = source, Target = target, Value = -damage});
             if (target.Hp <= 0)
             {
-                c.AddDelta(new Delta {DeltaType = DeltaType.Destroyed, Source = source, Target = target});
+                deltaAccumulator.AddDelta(new Delta {DeltaType = DeltaType.Destroyed, Source = source, Target = target});
             }
         }
 

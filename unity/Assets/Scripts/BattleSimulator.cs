@@ -81,7 +81,7 @@ public class BattleSimulator : MonoBehaviour
         cardView2ShipDict[cardViewList[5]] = shipList2[1];
         cardView2ShipDict[cardViewList[6]] = shipList2[2];
         cardView2ShipDict[cardViewList[7]] = shipList2[3];
-        
+
         shipList1[0].LearnCommand(new Heal());
         shipList1[0].LearnCommand(new Bombard());
         shipList1[0].MaxHp = 5;
@@ -92,7 +92,7 @@ public class BattleSimulator : MonoBehaviour
             party1.AddShip(s);
 
             UpdateHpMp(ship2CardViewDict[s], s);
-            
+
             ship2CardViewDict[s].Glow = false;
         }
 
@@ -112,14 +112,14 @@ public class BattleSimulator : MonoBehaviour
         ship2CardViewDict[context.CurrentTurnShip].Glow = true;
 
         commandButtonGroup.UpdateCommandList(context.CurrentTurnShip);
-        
+
         Debug.Log(context.State);
     }
 
     public async Task ExecuteBattleCommandAsync(IBattleCommand cmd)
     {
         if (busy) return;
-        
+
         commandButtonGroup.gameObject.SetActive(false);
 
         if (cmd.TargetType == TargetType.Single)
@@ -130,12 +130,12 @@ public class BattleSimulator : MonoBehaviour
             var selectedShip = await WaitForShipSelection();
             cmd.SetTarget(selectedShip);
         }
-        
+
         busy = true;
         await ExecuteBattleCommandInternalAsync(cmd);
         busy = false;
         commandButtonGroup.gameObject.SetActive(context.State == ContextState.Ready);
-        
+
         commandButtonGroup.UpdateCommandList(context.CurrentTurnShip);
     }
 
@@ -152,16 +152,16 @@ public class BattleSimulator : MonoBehaviour
             var s = cardView2ShipDict[cardView];
             cardView.SelectionOutline = s.Party != party1 && s.Hp > 0;
         }
-        
+
         shipSelectionTsc = new TaskCompletionSource<Ship>();
         var selectedShip = await shipSelectionTsc.Task;
         shipSelectionTsc = null;
-        
+
         foreach (var cardView in cardViewList)
         {
             cardView.SelectionOutline = false;
         }
-        
+
         return selectedShip;
     }
 
@@ -171,8 +171,10 @@ public class BattleSimulator : MonoBehaviour
 
         var oldTurnShip = context.CurrentTurnShip;
         var cmdResult = context.ExecuteCommand(cmd);
-        foreach (var delta in cmdResult.DeltaList)
+        for (var index = 0; index < cmdResult.DeltaList.Count; index++)
         {
+            var delta = cmdResult.DeltaList[index];
+
             Debug.Log(delta.DeltaType);
 
             var sourceShipPivot = ship2CardWorldDict[delta.Source].ShipPivot;
@@ -187,9 +189,17 @@ public class BattleSimulator : MonoBehaviour
                     sourceShipPivot.LookAt(targetShipPivot);
                     var laser = sourceShipPivot.Fire();
                     ship2CardViewDict[delta.Target].Glow = true;
-                    while (laser != null && laser.gameObject != null)
+
+                    if (index < cmdResult.DeltaList.Count - 1
+                        && cmdResult.DeltaList[index + 1].DeltaType == delta.DeltaType)
                     {
-                        await Task.Yield();
+                    }
+                    else
+                    {
+                        while (laser != null && laser.gameObject != null)
+                        {
+                            await Task.Yield();
+                        }
                     }
 
                     break;
@@ -199,15 +209,34 @@ public class BattleSimulator : MonoBehaviour
                         tooltipView.Text1 = "목표물 HP 감소";
                         tooltipView.Text2 = $"목표물의 HP가 {Mathf.Abs(delta.Value)} 감소했습니다.";
                     }
+
                     UpdateHpMp(ship2CardViewDict[delta.Target], delta.Target);
-                    await Task.Delay(1000);
+
+                    if (index < cmdResult.DeltaList.Count - 1
+                        && cmdResult.DeltaList[index + 1].DeltaType == delta.DeltaType)
+                    {
+                    }
+                    else
+                    {
+                        await Task.Delay(1000);
+                    }
+
                     break;
                 case DeltaType.Destroyed:
                     tooltipView.Text1 = "파괴";
                     tooltipView.Text2 = "목표물이 파괴되었습니다.";
                     ship2CardViewDict[delta.Target].Glow = false;
                     targetShipPivot.DestroyWithExplosion();
-                    await Task.Delay(1000);
+
+                    if (index < cmdResult.DeltaList.Count - 1
+                        && cmdResult.DeltaList[index + 1].DeltaType == delta.DeltaType)
+                    {
+                    }
+                    else
+                    {
+                        await Task.Delay(1000);
+                    }
+
                     break;
                 case DeltaType.TurnChanged:
                     ship2CardViewDict[oldTurnShip].Glow = false;

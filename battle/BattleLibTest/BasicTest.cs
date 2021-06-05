@@ -661,28 +661,28 @@ namespace BattleLibTest
                 deltaList.MoveNext();
 
                 Assert.NotNull(deltaList.Current);
-                Assert.Equal(DeltaType.Hp, deltaList.Current.DeltaType);
-                Assert.Equal(s1, deltaList.Current.Source);
-                Assert.Equal(s2A, deltaList.Current.Target);
-                Assert.Equal(-1, deltaList.Current.Value);
-                deltaList.MoveNext();
-
-                Assert.NotNull(deltaList.Current);
-                Assert.Equal(DeltaType.Destroyed, deltaList.Current.DeltaType);
-                Assert.Equal(s2A, deltaList.Current.Target);
-                deltaList.MoveNext();
-
-                Assert.NotNull(deltaList.Current);
                 Assert.Equal(DeltaType.Fire, deltaList.Current.DeltaType);
                 Assert.Equal(s1, deltaList.Current.Source);
                 Assert.Equal(s2B, deltaList.Current.Target);
                 deltaList.MoveNext();
-
+                
+                Assert.NotNull(deltaList.Current);
+                Assert.Equal(DeltaType.Hp, deltaList.Current.DeltaType);
+                Assert.Equal(s1, deltaList.Current.Source);
+                Assert.Equal(s2A, deltaList.Current.Target);
+                Assert.Equal(-1, deltaList.Current.Value);
+                deltaList.MoveNext();
+                
                 Assert.NotNull(deltaList.Current);
                 Assert.Equal(DeltaType.Hp, deltaList.Current.DeltaType);
                 Assert.Equal(s1, deltaList.Current.Source);
                 Assert.Equal(s2B, deltaList.Current.Target);
                 Assert.Equal(-1, deltaList.Current.Value);
+                deltaList.MoveNext();
+                
+                Assert.NotNull(deltaList.Current);
+                Assert.Equal(DeltaType.Destroyed, deltaList.Current.DeltaType);
+                Assert.Equal(s2A, deltaList.Current.Target);
                 deltaList.MoveNext();
 
                 Assert.NotNull(deltaList.Current);
